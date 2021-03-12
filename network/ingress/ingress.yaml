@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: server
+  annotations:
+    kubernetes.io/ingress.class: "ingress-class"
+spec:
+  rules:
+    - host: file-server.info
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: index-service
+              servicePort: 80
+                
+          - path: /files
+            pathType: Prefix
+            backend:
+              serviceName: file-service
+              servicePort: 80
+              
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: IngressClass
+metadata:
+  name: ingress-class
+  namespace: server
+spec:
+  controller: k8s.io/ingress-nginx
+  parameters:
+    apiGroup: k8s.example.com
+    kind: IngressParameters
+    name: ingress
+    
